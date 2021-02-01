@@ -3,7 +3,7 @@
 Simple psk decoder plugin
 -----------------------------------------------------------------
 
-![overview](/psk-example.png?raw=true)
+![overview](/psk-decoder.png?raw=true)
 
 
 
