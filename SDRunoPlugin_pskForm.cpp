@@ -235,7 +235,7 @@ void	SDRunoPlugin_pskForm::Setup () {
 	title_bar_label.size(nana::size(65, 12));
 	title_bar_label.move(nana::point((formWidth / 2) - 5, 9));
 	title_bar_label.format(true);
-	title_bar_label.caption("< bold size = 6 color = 0x000000 font = \"Verdana\">RTTY decoder</>");
+	title_bar_label.caption("< bold size = 6 color = 0x000000 font = \"Verdana\"> psk decoder</>");
 	title_bar_label.text_align(nana::align::center, nana::align_v::center);
 	title_bar_label.fgcolor(nana::color_rgb(0x000000));
 	title_bar_label.transparent(true);
@@ -282,21 +282,23 @@ void	SDRunoPlugin_pskForm::Setup () {
 	pskText. caption ("");
 
 	qualityLabel. transparent (true);
-	qualityLabel.fgcolor(nana::colors::white);
-	qualityLabel.caption("");
+	qualityLabel. fgcolor(nana::colors::white);
+	qualityLabel. caption("");
+	qualityLabel. tooltip ("quality of the signal");
 
 	pskAfc. push_back ("Afc off");
 	pskAfc. push_back ("Afc on");
 	pskAfc. option (0);
 	pskAfc. events(). selected ([&](const nana::arg_combox &ar_cbx){
                       set_pskAfc (ar_cbx. widget. caption ());});
+	pskAfc. tooltip ("selection of afc, do not expect miracles");
 
 	pskReverse . push_back ("normal");
 	pskReverse . push_back ("reverse");
 	pskReverse. option (0);
 	pskReverse. events(). selected ([&](const nana::arg_combox &ar_cbx){
                       set_pskReverse (ar_cbx. widget. caption ());});
-
+	pskReverse. tooltip ("inverted or normal signal");
 	pskMode. push_back ("psk31");
 	pskMode. push_back ("psk63");
 	pskMode. push_back ("psk125");
@@ -306,6 +308,7 @@ void	SDRunoPlugin_pskForm::Setup () {
 	pskMode. option (0);
 	pskMode. events(). selected ([&](const nana::arg_combox &ar_cbx){
                       set_pskMode (ar_cbx. widget. caption ());});
+	pskMode. tooltip ("psk mode. Note Qpsk modes not implementged");
 
 	pskSquelch.   range (1, 20, 1);
         pskSquelch.   value (std::to_string (3));
@@ -314,6 +317,7 @@ void	SDRunoPlugin_pskForm::Setup () {
         pskSquelch. tooltip ("squelchLevel");
         pskSquelch. fgcolor(nana::colors::white);
         pskSquelch. bgcolor(nana::colors::black);
+	pskSquelch. tooltip ("squelchlevel to avoid noise being decoded as signal");
 
 	pskFilter. range (4, 20, 1);
         pskFilter. value (std::to_string (5));
@@ -322,6 +326,7 @@ void	SDRunoPlugin_pskForm::Setup () {
         pskFilter. tooltip ("filter degree");
         pskFilter. fgcolor(nana::colors::white);
         pskFilter. bgcolor(nana::colors::black);
+	pskFilter. tooltip ("Filter level for the signal");
 }
 
 void SDRunoPlugin_pskForm::SettingsButton_Click () {

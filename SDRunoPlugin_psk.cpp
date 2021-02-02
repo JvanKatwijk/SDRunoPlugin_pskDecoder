@@ -183,7 +183,7 @@ int	cycleCount	= 0;
 	   cycleCount += BUFFER_SIZE;
 	   if (cycleCount > IN_RATE) {
 	      cycleCount		= 0;
-	      set_qualityLabel (pskAfcmetrics * 100);
+	      set_qualityLabel (pskAfcmetrics);
 	   }
 	}
 	m_form.set_pskText ("end of worker function");

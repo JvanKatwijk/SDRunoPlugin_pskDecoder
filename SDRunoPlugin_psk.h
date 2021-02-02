@@ -111,8 +111,8 @@ private:
 	uint8_t			getIntPhase	(std::complex<float>);
 	int16_t			DecimatingCountforpskMode	();
 
-	void            psk_clrText();
-	void            psk_addText(char);
+	void	                psk_clrText();
+	void	                psk_addText(char);
 
 	std::vector<std::complex<float>> pskToneBuffer;
 	int             pskTonePhase;
