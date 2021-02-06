@@ -574,7 +574,7 @@ void	SDRunoPlugin_psk::psk_addText		(char c)  {
         if (c < ' ')
            c = ' ';
         pskTextLine. append (1, c);
-        if (pskTextLine. length () > 32)
+        if (pskTextLine. length () > 65)
            pskTextLine. erase (0, 1);
         m_form. set_pskText (pskTextLine);
 }

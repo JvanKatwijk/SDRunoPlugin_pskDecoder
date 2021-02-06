@@ -23,7 +23,8 @@
 #define sideBorderWidth (8)
 
 // TODO: Change these numbers to the height and width of your form
-#define formWidth (297)
+#define formWidth (400)
+//#define formWidth (297)
 #define formHeight (240)
 
 class SDRunoPlugin_pskUi;
@@ -31,21 +32,20 @@ class SDRunoPlugin_pskUi;
 class SDRunoPlugin_pskForm : public nana::form {
 public:
 
-	SDRunoPlugin_pskForm (SDRunoPlugin_pskUi& parent,
+	SDRunoPlugin_pskForm      (SDRunoPlugin_pskUi& parent,
 	                          IUnoPluginController& controller);		
 	~SDRunoPlugin_pskForm ();
 //
 //	going down
-void	set_pskText	(const std::string &);
+void	set_pskText	      (const std::string &);
 void	set_qualityLabel (int);
 
 //	going upwards
-void	set_pskAfc 	(const std::string &);
-void	set_pskReverse	(const std::string &);
-void	set_pskMode	(const std::string &);
-
-void	set_pskFilter	(int);
-void	set_pskSquelch	(int);
+void	set_pskAfc	      (const std::string &);
+void	set_pskReverse    (const std::string &);
+void	set_pskMode       (const std::string &);
+void	set_pskFilter	  (int);
+void	set_pskSquelch	  (int);
 
 //
 void	Run			();
@@ -75,9 +75,9 @@ private:
 	nana::picture sett_button{ *this, nana::rectangle(0, 0, 40, 15) };
 	void SettingsButton_Click();
 
-	// TODO: Now add your UI controls here
+// TODO: Now add your UI controls here
 //
-	nana::label pskText {*this, nana::rectangle (20, 200, 250, 50) };
+	nana::label pskText {*this, nana::rectangle (20, 200, 350, 50) };
 	nana::label qualityLabel {*this, nana::rectangle (20, 60, 30, 20) };
 
 	nana::combox pskAfc {*this, nana::rectangle (80, 80, 60, 20) };
@@ -85,7 +85,7 @@ private:
 	nana::combox pskMode {*this, nana::rectangle (220, 80, 60, 20)};
 
 	nana::spinbox pskFilter {*this, nana::rectangle (30, 100, 100, 30) };
-        nana::spinbox pskSquelch {*this, nana::rectangle (140, 100, 100, 30) }; 
+	nana::spinbox pskSquelch {*this, nana::rectangle (140, 100, 100, 30) }; 
 	
 	SDRunoPlugin_pskUi & m_parent;
 	IUnoPluginController & m_controller;
