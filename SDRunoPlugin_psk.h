@@ -48,8 +48,9 @@ public:
 	void	HandleEvent(const UnoEvent& ev) override;
 
 //      going down
-        void    set_pskText             (const std::string &);
-        void    set_qualityLabel        (int);
+        void	show_pskText		(const std::string &);
+        void	show_qualityLabel	(float);;
+	void	show_pskIF			(float);
 
 //      going upwards
         void    set_pskAfc              (const std::string &);

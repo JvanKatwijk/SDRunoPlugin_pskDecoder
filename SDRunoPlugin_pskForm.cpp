@@ -334,12 +334,16 @@ void SDRunoPlugin_pskForm::SettingsButton_Click () {
 }
 
 //      going down
-void	SDRunoPlugin_pskForm::set_pskText	(const std::string &s) {
+void	SDRunoPlugin_pskForm::show_pskText	(const std::string &s) {
 	pskText. caption (s);
 }
 
-void	SDRunoPlugin_pskForm::set_qualityLabel	(int q) {
+void	SDRunoPlugin_pskForm::show_qualityLabel	(float q) {
 	qualityLabel. caption (std::to_string (q));
+}
+
+void	SDRunoPlugin_pskForm::show_pskIF	(float q) {
+	IFLabel. caption (std::to_string (q));
 }
 
 //      going upwards

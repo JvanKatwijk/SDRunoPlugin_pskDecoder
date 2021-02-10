@@ -90,16 +90,22 @@ void	SDRunoPlugin_pskUi::FormClosed () {
 
 
 //      going down
-void	SDRunoPlugin_pskUi::set_pskText	(const std::string &s) {
+void	SDRunoPlugin_pskUi::show_pskText	(const std::string &s) {
 	std::lock_guard<std::mutex> l (m_lock);
 	if (m_form != nullptr)
-	   m_form -> set_pskText (s);
+	   m_form -> show_pskText (s);
 }
 	
-void	SDRunoPlugin_pskUi::set_qualityLabel	(int q) {
+void	SDRunoPlugin_pskUi::show_qualityLabel	(float q) {
 	std::lock_guard<std::mutex> l (m_lock);
         if (m_form != nullptr)
-           m_form -> set_qualityLabel (q);
+           m_form -> show_qualityLabel (q);
+}
+
+void	SDRunoPlugin_pskUi::show_pskIF	(float q) {
+	std::lock_guard<std::mutex> l (m_lock);
+        if (m_form != nullptr)
+           m_form -> show_pskIF (q);
 }
 
 //      going upwards

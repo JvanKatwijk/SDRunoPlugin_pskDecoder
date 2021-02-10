@@ -9,15 +9,16 @@ C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp
 C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(100,62): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
 C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(142,47): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
 C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(143,60): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(186,26): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(203,16): warning C4018: '>=': signed/unsigned mismatch
-C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(243,27): warning C4018: '<': signed/unsigned mismatch
-C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(249,34): warning C4244: 'argument': conversion from 'double' to 'int32_t', possible loss of data
-C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(276,24): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
-C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(325,58): warning C4244: 'argument': conversion from 'double' to 'const std::complex<float>::_Ty', possible loss of data
-C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(323,65): warning C4244: 'argument': conversion from 'double' to 'const std::complex<float>::_Ty', possible loss of data
-C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(563,52): warning C4244: 'argument': conversion from 'float' to 'int32_t', possible loss of data
-C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(562,52): warning C4244: 'argument': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(186,27): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(187,20): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(204,16): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(244,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(250,34): warning C4244: 'argument': conversion from 'double' to 'int32_t', possible loss of data
+C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(277,24): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(326,58): warning C4244: 'argument': conversion from 'double' to 'const std::complex<float>::_Ty', possible loss of data
+C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(324,65): warning C4244: 'argument': conversion from 'double' to 'const std::complex<float>::_Ty', possible loss of data
+C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(568,52): warning C4244: 'argument': conversion from 'float' to 'int32_t', possible loss of data
+C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(567,52): warning C4244: 'argument': conversion from 'float' to 'int32_t', possible loss of data
   SDRunoPlugin_pskForm.cpp
   SDRunoPlugin_pskProject.cpp
   SDRunoPlugin_pskUi.cpp
@@ -32,7 +33,7 @@ C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\up-filter.cpp(35,27)
 C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\up-filter.cpp(37,54): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\up-filter.cpp(42,56): warning C4244: '*=': conversion from 'double' to 'float', possible loss of data
   Generating Code...
-C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(379): warning C4700: uninitialized local variable 'c' used
+C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\SDRunoPlugin_psk.cpp(380): warning C4700: uninitialized local variable 'c' used
   Creating Release\SDRunoPlugin_psk.res
   
   Using codepage 1252 as default
@@ -62,14 +63,14 @@ nana_v141_Release_x86.lib(wvl.obj) : warning LNK4099: PDB 'nana.pdb' was not fou
 nana_v141_Release_x86.lib(label.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(label.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(combox.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(combox.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(spinbox.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(spinbox.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
-nana_v141_Release_x86.lib(picture.obj) : warning LNK4099: PDB '' was not found with 'nana_v141_Release_x86.lib(picture.obj)' or at ''; linking object as if no debug info
+nana_v141_Release_x86.lib(picture.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(picture.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(dragger.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(dragger.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(bedrock_pi.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(bedrock_pi.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(bedrock_windows.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(bedrock_windows.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(graphics.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(graphics.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(pixel_buffer.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(pixel_buffer.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(charset.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(charset.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
-nana_v141_Release_x86.lib(platform.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(platform.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
+nana_v141_Release_x86.lib(platform.obj) : warning LNK4099: PDB '' was not found with 'nana_v141_Release_x86.lib(platform.obj)' or at ''; linking object as if no debug info
 nana_v141_Release_x86.lib(platform_abstraction.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(platform_abstraction.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(color_schemes.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(color_schemes.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(deploy.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(deploy.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
@@ -81,7 +82,7 @@ nana_v141_Release_x86.lib(window_layout.obj) : warning LNK4099: PDB 'nana.pdb' w
 nana_v141_Release_x86.lib(internationalization.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(internationalization.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(tooltip.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(tooltip.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(tabbar.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(tabbar.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
-nana_v141_Release_x86.lib(effects.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(effects.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
+nana_v141_Release_x86.lib(effects.obj) : warning LNK4099: PDB '' was not found with 'nana_v141_Release_x86.lib(effects.obj)' or at ''; linking object as if no debug info
 nana_v141_Release_x86.lib(text_renderer.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(text_renderer.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(element.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(element.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(drawing.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(drawing.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
@@ -98,7 +99,7 @@ nana_v141_Release_x86.lib(msgbox.obj) : warning LNK4099: PDB 'nana.pdb' was not 
 nana_v141_Release_x86.lib(notifier.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(notifier.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(native_paint_interface.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(native_paint_interface.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(image_process_provider.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(image_process_provider.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
-nana_v141_Release_x86.lib(screen.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(screen.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
+nana_v141_Release_x86.lib(screen.obj) : warning LNK4099: PDB '' was not found with 'nana_v141_Release_x86.lib(screen.obj)' or at ''; linking object as if no debug info
 nana_v141_Release_x86.lib(menu.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(menu.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(scroll.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(scroll.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info
 nana_v141_Release_x86.lib(dataexch.obj) : warning LNK4099: PDB 'nana.pdb' was not found with 'nana_v141_Release_x86.lib(dataexch.obj)' or at 'C:\Users\JvanK\Source\Repos\plugins\SDRunoPlugin_pskDecoder\Release\nana.pdb'; linking object as if no debug info

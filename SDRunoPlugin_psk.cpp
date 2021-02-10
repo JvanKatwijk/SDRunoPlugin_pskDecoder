@@ -82,7 +82,7 @@ SDRunoPlugin_psk::
 	pskSourceRate	= m_controller -> GetSampleRate (0);
 	pskError	= false;
 	if ((pskSourceRate != 2000000 / 32) || (pskAudioRate != 48000)) {
-	   m_form. set_pskText ("please set input rate to 2000000 /32 and audio to 48000");
+	   m_form. show_pskText ("please set input rate to 2000000 /32 and audio to 48000");
 	   pskError	= true;
 	}
 
@@ -183,10 +183,11 @@ int	cycleCount	= 0;
 	   cycleCount += BUFFER_SIZE;
 	   if (cycleCount > IN_RATE) {
 	      cycleCount		= 0;
-	      set_qualityLabel (pskAfcmetrics);
+	      show_qualityLabel (pskAfcmetrics);
+	      show_pskIF	(psk_IF);
 	   }
 	}
-	m_form.set_pskText ("end of worker function");
+	m_form.show_pskText ("end of worker function");
 	Sleep(1000);
 }
 
@@ -437,12 +438,16 @@ int i;
 }
 
 //     going down
-void	SDRunoPlugin_psk::set_pskText		(const std::string &s) {
-	m_form. set_pskText (s);
+void	SDRunoPlugin_psk::show_pskText		(const std::string &s) {
+	m_form. show_pskText (s);
 }
 
-void	SDRunoPlugin_psk::set_qualityLabel	(int n) {
-	m_form. set_qualityLabel (n);
+void	SDRunoPlugin_psk::show_qualityLabel	(float n) {
+	m_form. show_qualityLabel (n);
+}
+
+void	SDRunoPlugin_psk::show_pskIF		(float f) {
+	m_form. show_pskIF	(f);
 }
 
 //      going upwards
@@ -566,7 +571,7 @@ void	SDRunoPlugin_psk::psk_setup	() {
 
 static  std::string pskTextLine;
 void    SDRunoPlugin_psk::psk_clrText		()	{
-        m_form.  set_pskText ("");
+        m_form.  show_pskText ("");
         pskTextLine        = "";
 }
 
@@ -576,7 +581,7 @@ void	SDRunoPlugin_psk::psk_addText		(char c)  {
         pskTextLine. append (1, c);
         if (pskTextLine. length () > 65)
            pskTextLine. erase (0, 1);
-        m_form. set_pskText (pskTextLine);
+        m_form. show_pskText (pskTextLine);
 }
 
 

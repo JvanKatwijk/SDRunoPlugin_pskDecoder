@@ -24,6 +24,8 @@ Using the zoom function, and using the numerical display, makes it possible
 to tune to the signal.
 
 
+The implementation of the decoder is taken from the psk decoder of the
+swradio-8
 
 
 

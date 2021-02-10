@@ -37,8 +37,9 @@ public:
 	~SDRunoPlugin_pskForm ();
 //
 //	going down
-void	set_pskText	      (const std::string &);
-void	set_qualityLabel (int);
+void	show_pskText	        (const std::string &);
+void	show_qualityLabel	(float);
+void	show_pskIF	        (float);
 
 //	going upwards
 void	set_pskAfc	      (const std::string &);
@@ -78,7 +79,6 @@ private:
 // TODO: Now add your UI controls here
 //
 	nana::label pskText {*this, nana::rectangle (20, 200, 350, 50) };
-	nana::label qualityLabel {*this, nana::rectangle (20, 60, 30, 20) };
 
 	nana::combox pskAfc {*this, nana::rectangle (80, 80, 60, 20) };
 	nana::combox pskReverse {*this, nana::rectangle (150, 80, 60, 20)};
@@ -87,6 +87,9 @@ private:
 	nana::spinbox pskFilter {*this, nana::rectangle (30, 100, 100, 30) };
 	nana::spinbox pskSquelch {*this, nana::rectangle (140, 100, 100, 30) }; 
 	
+	nana::label qualityLabel {*this, nana::rectangle (30, 140, 100, 20) };
+	nana::label IFLabel {*this, nana::rectangle (150, 140, 100, 20) };
+
 	SDRunoPlugin_pskUi & m_parent;
 	IUnoPluginController & m_controller;
 };
