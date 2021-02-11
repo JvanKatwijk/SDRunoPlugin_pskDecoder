@@ -286,6 +286,12 @@ void	SDRunoPlugin_pskForm::Setup () {
 	qualityLabel. caption("");
 	qualityLabel. tooltip ("quality of the signal");
 
+	IFLabel.transparent(true);
+	IFLabel.fgcolor(nana::colors::white);
+	IFLabel.caption("");
+	IFLabel.tooltip("frrequency correction");
+
+
 	pskAfc. push_back ("Afc off");
 	pskAfc. push_back ("Afc on");
 	pskAfc. option (0);
@@ -323,7 +329,7 @@ void	SDRunoPlugin_pskForm::Setup () {
         pskFilter. value (std::to_string (5));
         pskFilter. events (). text_changed ([&](const nana::arg_spinbox &s) {
                                     set_pskSquelch (pskFilter. to_int ());});
-        pskFilter. tooltip ("filter degree");
+        pskFilter. tooltip ("Degree of final lowpass filter");
         pskFilter. fgcolor(nana::colors::white);
         pskFilter. bgcolor(nana::colors::black);
 	pskFilter. tooltip ("Filter level for the signal");

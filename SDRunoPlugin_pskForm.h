@@ -23,8 +23,8 @@
 #define sideBorderWidth (8)
 
 // TODO: Change these numbers to the height and width of your form
-#define formWidth (400)
 //#define formWidth (297)
+#define formWidth (500)
 #define formHeight (240)
 
 class SDRunoPlugin_pskUi;
@@ -78,17 +78,17 @@ private:
 
 // TODO: Now add your UI controls here
 //
-	nana::label pskText {*this, nana::rectangle (20, 200, 350, 50) };
+	nana::label pskText {*this, nana::rectangle (20, 200, 450, 20) };
 
-	nana::combox pskAfc {*this, nana::rectangle (80, 80, 60, 20) };
-	nana::combox pskReverse {*this, nana::rectangle (150, 80, 60, 20)};
-	nana::combox pskMode {*this, nana::rectangle (220, 80, 60, 20)};
+	nana::combox pskAfc {*this, nana::rectangle (60, 80, 100, 20) };
+	nana::combox pskReverse {*this, nana::rectangle (200, 80, 100, 20)};
+	nana::combox pskMode {*this, nana::rectangle (350, 80, 100, 20)};
 
-	nana::spinbox pskFilter {*this, nana::rectangle (30, 100, 100, 30) };
-	nana::spinbox pskSquelch {*this, nana::rectangle (140, 100, 100, 30) }; 
+	nana::spinbox pskFilter {*this, nana::rectangle (50, 100, 100, 30) };
+	nana::spinbox pskSquelch {*this, nana::rectangle (200, 100, 100, 30) }; 
 	
-	nana::label qualityLabel {*this, nana::rectangle (30, 140, 100, 20) };
-	nana::label IFLabel {*this, nana::rectangle (150, 140, 100, 20) };
+	nana::label qualityLabel {*this, nana::rectangle (50, 150, 100, 20) };
+	nana::label IFLabel {*this, nana::rectangle (200, 150, 100, 20) };
 
 	SDRunoPlugin_pskUi & m_parent;
 	IUnoPluginController & m_controller;

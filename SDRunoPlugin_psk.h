@@ -50,14 +50,14 @@ public:
 //      going down
         void	show_pskText		(const std::string &);
         void	show_qualityLabel	(float);;
-	void	show_pskIF			(float);
+	    void	show_pskIF			(float);
 
 //      going upwards
         void    set_pskAfc              (const std::string &);
         void    set_pskReverse          (const std::string &);
         void    set_pskMode             (const std::string &);
 
-        void    set_pskFilter          (int);
+        void    set_pskFilter           (int);
         void    set_pskSquelch          (int);
 
 private:
