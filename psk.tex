@@ -40,23 +40,25 @@ The Netherlands\\
 %\baselineskip 22pt
 \ \\
 \ \\
-\includegraphics[width=140mm]{psk-example.png}
+\includegraphics[width=160mm]{psk-example.png}
 \ \\
 \section{Introduction}
 The SDRuno psk plugin is a simple plugin to decode a psk signal that
 is tuned to. The current version supports BPSK31, BPSK63, and BPSK125.
-
 PSK is less popular than about 5 to 10 years ago, nevertheless, the region
 just above 14070 KHz usually contains quite some amateur calls using the
 mode.
 
 \section{Settings}
-psk is a signal with a small footprint, the width used on  the band is
-less than 50 Hz. The decoder therefore works with an intermediate
-samplerate of 2000 samples/second. Since the minimal samplerate for the
+psk is a signal with a very small footprint, the width used on the band is
+less than 50 Hz. The decoder therefore works with a low
+ intermediate samplerate,  2000 samples/second.
+Since the minimal samplerate for the
 SDRplay family is 2000000, a lot of decimation has to be done.
+Part of it will be done by the half band filters in SDRuno, the resulting
+decimation is dome in the plugin implementation.
 \par
-This implementation requires an input sample rate of 62500 samples/second,
+The plugin operates with an input sample rate of 62500 samples/second,
 this requires the setting of the mainwidget to a samplerate of 2000000,
 and a decimation of 32, as shown in the picture
 One should realize that the SDRuno spectrum display shows a band of 62.5
@@ -66,21 +68,22 @@ is that precise tuning, based on the view on the spectrum is not easy.
 \includegraphics[width=100mm]{main-widget.png}
 
 The plugin generates an audiotone of 800 Hz + the tuning offset,
-the sound is output with a rate of 48000, setting "AM" in the RX control window
+In my experience, sound is very helpful in precise tuning.
+The sound is output with a rate of 48000, setting "AM" in the RX control window
 will set this rate.
 
 \section{Tuning}
 As said, psk is a signal with a small footprint, and since many of
-the amateur transmissions are brief messages (such as CQ CQ ...), tuning
-requires some training.
+the amateur transmissions are brief messages (such as CQ CQ ...),
+just a couple of seconds, tuning requires some training.
 \par
-What is really helpful here is the auxiliary spectrum display, the widget
-can be enlarged, and one may zoom in such that one may view a spectrum
-with a width of app 1 KHz.
+What is really helpful is the {\em auxiliary spectrum display} on 
+SDRuno, the widget can be enlarged, and one may zoom in such
+that one may look at a spectrum with a width of app 1 KHz.
 
 \includegraphics[width=100mm]{auxiliary-spectrum-display.png}
 
-The way to tune is in two steps
+My way to tune is in two steps
 \begin{itemize}
 \item coarse tuning with the mouse on the main spectrum display;
 \item fine tuning with the mouse controlled numerical display until the
@@ -98,7 +101,7 @@ The widget has three control comboboxes, and two spinboxes.
 \item the combobox, with {\em Afc on} on the picture, controls the afc. 
 It just has two options {\em Afc on}, or {\em Afc off}. If "on", the
 frequency offset used for correcting the measured frequency offset is
-in the right label, here -4.7... Hz;
+in the right label, here -2.7... Hz;
 \item the combobox, with {\em normal} on the picture, let chose between
 normal and inverse decoding;
 \item the combobox, with {\em psk31} on the picture, controls the decoding mode.
@@ -115,7 +118,8 @@ is no decoding.
 The number label to the left, below the filter depth indicator,
 here with a value of 55...,
 shows the "quality" of the decoding of the signal. As usual
-with this kind of indicators, 100 is best.
+with this kind of indicators, 100 is best, but to get it requires
+a decent signal.
 
 The bottom line of the widget is reserved for the decoded signal. Note that
 bpsk does not provide an error correction mechanism, and garbage may be shown.
