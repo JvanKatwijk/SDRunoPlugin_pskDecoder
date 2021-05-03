@@ -22,6 +22,8 @@
 
 #define PSK_IF			0
 
+#define	NO_OFFSET_FOUND		-500
+#define	SEARCH_WIDTH 400
 //
 #define  _USE_MATH_DEFINES
 #include	<math.h>
@@ -41,7 +43,9 @@ SDRunoPlugin_psk::
 	                                         theMixer (IN_RATE),
 	                                         theDecimator (IN_RATE/2500),
 	                                         localShifter (PSKRATE),
-	                                         pskToneBuffer (128) {
+	                                         pskToneBuffer (128),
+	                                         newFFT (PSKRATE, 0, PSKRATE - 1){
+	
 	m_controller		= &controller;
 //
 //	psk specifics
@@ -53,6 +57,7 @@ SDRunoPlugin_psk::
 	pskMode		= MODE_PSK31;
 	pskSquelchLevel	= 5;
 	pskReverse	= false;
+	searchWidth	= SEARCH_WIDTH;
 
 	for (int i = 0; i < 16; i ++)
 	   pskBuffer [i] = std::complex<float> (0, 0);
@@ -60,8 +65,8 @@ SDRunoPlugin_psk::
 	pskBitclk	= 0;
 	pskDecimatorCount	= 0;
 	BPM_Filter	= new pskBandfilter (2 * pskFilterDegree + 1,
-	                                     PSK_IF - PSK31_SPEED,
-	                                     PSK_IF + PSK31_SPEED,
+	                                     psk_IF - PSK31_SPEED,
+	                                     psk_IF + PSK31_SPEED,
 	                                     PSKRATE);
 
 // we want to "work" with a rate of 2000, since we arrive
@@ -95,6 +100,7 @@ SDRunoPlugin_psk::
         pskTonePhase     = 0;
         audioFilter     = new upFilter (25, PSKRATE, pskAudioRate);
 
+	tuning		= false;
 	selectedFrequency
                         = m_controller -> GetVfoFrequency (0);
         centerFrequency = m_controller -> GetCenterFrequency (0);
@@ -227,27 +233,46 @@ void	SDRunoPlugin_psk::process (std::complex<float> z) {
 	   processSample (out[i]);
 	}
 }
+
+
+static int fftTeller = 0;
+static float secondsRun	= 0;
 //
 //	here we are on PSK_RATE samples per second
 void	SDRunoPlugin_psk::processSample (std::complex<float> z) {
 std::complex<float>	old_z;
 std::complex<float> v [PSKRATE / 8];
 std::vector<std::complex<float>> tone (pskAudioRate / PSKRATE);
-
+std::complex<float> outV [PSKRATE];
 //	we down-mix the signal to a zero-centered one,
 	old_z	= z;
+	z = localShifter.do_shift(z, psk_IF);
 	locker. lock ();
 	z	= BPM_Filter -> Pass (z);
 	locker. unlock ();
 
 	audioFilter -> Filter (cmul (z, 20), tone. data ());
-        for (int i = 0; i < tone. size (); i ++) {
-           tone [i] *= pskToneBuffer [pskTonePhase];
-           pskTonePhase = (pskTonePhase + 801) % pskAudioRate;
-        }
-        pskAudioBuffer.putDataIntoBuffer (tone. data (), tone. size () * 2);
+	for (int i = 0; i < tone. size (); i ++) {
+	   tone [i] *= pskToneBuffer [pskTonePhase];
+	   pskTonePhase = (pskTonePhase + 801) % pskAudioRate;
+	}
+	pskAudioBuffer.putDataIntoBuffer (tone. data (), tone. size () * 2);
 
-	z	= localShifter. do_shift  (z, psk_IF);
+	if (tuning) {
+	   newFFT. do_FFT (z, outV);
+	   fftTeller++;
+	   if (fftTeller >= PSKRATE / 2) {
+	      int offs = offset (outV);
+	      if ((offs != NO_OFFSET_FOUND) && (abs (offs) >= 3)) {
+	         updateFrequency (offs / 2);
+	      }
+	      secondsRun += 0.5;
+	      if ((offs == 0) || (secondsRun > 5))
+	         tuning = false;
+	      fftTeller = 0;
+	      newFFT.reset();
+	   }
+	}
 //
 //	Now we are on PSKRATE 
 	if (++pskDecimatorCount < this -> DecimatingCountforpskMode ()) 
@@ -584,4 +609,56 @@ void	SDRunoPlugin_psk::psk_addText		(char c)  {
         m_form. show_pskText (pskTextLine);
 }
 
+void	SDRunoPlugin_psk::set_searchWidth	(int w) {
+	searchWidth	= w;
+}
+
+#define	MAX_SIZE 40
+int	SDRunoPlugin_psk::offset (std::complex<float> *v) {
+float avg	= 0;
+float max	= 0;
+float	supermax	= 0;
+int	superIndex	= 0;
+
+	if (searchWidth < 25)
+	   return 0;
+	for (int i = 0 ; i < searchWidth; i ++)
+	   avg += abs (v [ (PSKRATE - searchWidth / 2 + i) % PSKRATE]);
+	avg /= searchWidth;
+	int	index	= PSKRATE - searchWidth / 2;
+	for (int i = 0; i < MAX_SIZE; i ++)
+	   max +=  abs (v [index + i]);
+
+	supermax	= max;
+	for (int i = MAX_SIZE; i < 400; i ++) {
+	   max -=  abs (v [(index + i - MAX_SIZE) % PSKRATE]);
+	   max +=  abs (v [(index + i) % PSKRATE]);
+	   if (max > supermax) {
+	      superIndex = (index + i - MAX_SIZE / 2) % PSKRATE;
+	      supermax = max;
+	   }
+	}
+
+	if (supermax / MAX_SIZE > 3 * avg)
+	   return superIndex > PSKRATE / 2 ?
+	                            superIndex - PSKRATE :
+	                                     superIndex;
+	else
+	   return NO_OFFSET_FOUND;
+}
+
+void	SDRunoPlugin_psk::updateFrequency (int offs) {
+	if (abs (offs) <= 2)
+	   return;
+	int	currentFreq	=
+                        m_controller -> GetVfoFrequency (0);
+	m_controller -> SetVfoFrequency (0, currentFreq + offs);
+}
+
+void	SDRunoPlugin_psk::trigger_tune	() {
+	newFFT. reset ();
+	tuning		= !tuning;
+	fftTeller	= 0;
+	secondsRun	= 0;
+}
 

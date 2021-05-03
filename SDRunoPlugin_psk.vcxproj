@@ -116,6 +116,7 @@
     <ClCompile Include="psk-shifter.cpp" />
     <ClCompile Include="utilities.cpp" />
     <ClCompile Include="up-filter.cpp" />
+    <ClCompile Include="sliding-fft.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -128,6 +129,7 @@
     <ClInclude Include="psk-shifter.h" />
     <ClInclude Include="utilities.h" />
     <ClInclude Include="up-filter.h" />
+    <ClInclude Include="sliding-fft.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SDRunoPlugin_psk.rc" />

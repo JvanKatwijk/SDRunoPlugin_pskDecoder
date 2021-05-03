@@ -131,6 +131,7 @@ void	SDRunoPlugin_pskForm::Setup () {
 	bmInfo_min.bmiHeader.biCompression = BI_RGB;
 	bmInfo_min_over.bmiHeader.biCompression = BI_RGB;
 	bmInfo_bar.bmiHeader.biCompression = BI_RGB;
+	bmInfo_sett.bmiHeader.biCompression = BI_RGB;
 	bmInfo_sett_over.bmiHeader.biCompression = BI_RGB;
 	borderHeader.bfOffBits = rawDataOffset;
 	borderHeader.bfSize = bmInfo_border.bmiHeader.biSizeImage;
@@ -320,7 +321,6 @@ void	SDRunoPlugin_pskForm::Setup () {
         pskSquelch.   value (std::to_string (3));
         pskSquelch. events (). text_changed ([&](const nana::arg_spinbox &s) {
                                     set_pskSquelch (pskSquelch. to_int ());});
-        pskSquelch. tooltip ("squelchLevel");
         pskSquelch. fgcolor(nana::colors::white);
         pskSquelch. bgcolor(nana::colors::black);
 	pskSquelch. tooltip ("squelchlevel to avoid noise being decoded as signal");
@@ -329,10 +329,35 @@ void	SDRunoPlugin_pskForm::Setup () {
         pskFilter. value (std::to_string (5));
         pskFilter. events (). text_changed ([&](const nana::arg_spinbox &s) {
                                     set_pskSquelch (pskFilter. to_int ());});
-        pskFilter. tooltip ("Degree of final lowpass filter");
         pskFilter. fgcolor(nana::colors::white);
         pskFilter. bgcolor(nana::colors::black);
 	pskFilter. tooltip ("Filter level for the signal");
+
+	pskSearch. range (0, 600, 1);
+	pskSearch. value (std::to_string (400));
+	pskSearch. events (). text_changed ([&](const nana::arg_spinbox &s) {
+	                            set_searchWidth (pskSearch. to_int ());});
+	pskSearch. fgcolor (nana::colors::white);
+	pskSearch. bgcolor (nana::colors::black);
+	pskSearch. tooltip ("range for autsearch of strongest signal");
+
+	tuneIn.caption("tune");
+	tuneIn. fgcolor (nana::colors::white);
+	tuneIn. bgcolor (nana::colors::black);
+	
+        tuneIn. tooltip ("trigger fine tuner");
+        tuneIn. events (). click ([&](){trigger_tune ();});
+
+	delete[] borderPixels;
+	delete[] innerPixels;
+	delete[] closePixels;
+	delete[] closeoverPixels;
+	delete[] minPixels;
+	delete[] minoverPixels;
+	delete[] barPixels;
+	delete[] barfocusedPixels;
+	delete[] settPixels;
+	delete[] settoverPixels;
 }
 
 void SDRunoPlugin_pskForm::SettingsButton_Click () {
@@ -371,5 +396,13 @@ void	SDRunoPlugin_pskForm::set_pskFilter	(int d) {
 
 void	SDRunoPlugin_pskForm::set_pskSquelch	(int d) {
 	m_parent. set_pskSquelch (d);
+}
+
+void	SDRunoPlugin_pskForm::set_searchWidth		(int d) {
+	m_parent. set_searchWidth (d);
+}
+
+void	SDRunoPlugin_pskForm::trigger_tune	() {
+	m_parent. trigger_tune ();
 }
 

@@ -42,6 +42,8 @@ public:
 
 	void	set_pskFilter		(int);
 	void	set_pskSquelch		(int);
+	void	set_searchWidth		(int);
+	void	trigger_tune		();
 
 private:
 	

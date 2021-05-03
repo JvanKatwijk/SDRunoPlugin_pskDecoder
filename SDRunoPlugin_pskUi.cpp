@@ -129,4 +129,11 @@ void	SDRunoPlugin_pskUi::set_pskSquelch	(int d) {
 	m_parent. set_pskSquelch (d);
 }
 
+void	SDRunoPlugin_pskUi::set_searchWidth	(int d) {
+	m_parent. set_searchWidth (d);
+}
+
+void	SDRunoPlugin_pskUi::trigger_tune	() {
+	m_parent. trigger_tune	();
+}
 

@@ -29,7 +29,7 @@
 \newcommand{\notrans}[3]{#1 \stackrel{#2}{\not\! \longrightarrow} #3}
 \bibliographystyle{plain}
 \begin{document}
-\title{A simple PSK plugin for SDRuno}
+\title{A simple PSK plugin for SDRuno (version 2)}
 \author{
 Jan van Katwijk\\
 Lazy Chair Computing \\
@@ -77,7 +77,26 @@ As said, psk is a signal with a small footprint, and since many of
 the amateur transmissions are brief messages (such as CQ CQ ...),
 just a couple of seconds, tuning requires some training.
 \par
-What is really helpful is the {\em auxiliary spectrum display} on 
+A frequency offset of even a few Hz can make decoding the signal in a
+correct way virtually impossible.
+Therefore, in version 2 of the decoder, an
+{\em automatic frequency shift} option is included.
+The {\em tune} button, when touched, instructs the software to
+the strongest signal in the
+neighbourhood of the tuned frequency - a signal at least 6 dB stronger
+than the average signal strength of the region.
+If such a point is found in the spectrum, the tuning will move slowly to
+that point.
+If no valid point in the region can be detected, searching will stop
+after at most 5 seconds.
+\par
+The {\em search width} is selected in a spinbox. Since psk signals
+are often very close to each other, the width can be selected to up to
+300 Hz (of course both up and down).
+If no 
+\par
+What is further really helpful  in tuning is using
+ the {\em auxiliary spectrum display} on 
 SDRuno, the widget can be enlarged, and one may zoom in such
 that one may look at a spectrum with a width of app 1 KHz.
 
@@ -87,7 +106,9 @@ My way to tune is in two steps
 \begin{itemize}
 \item coarse tuning with the mouse on the main spectrum display;
 \item fine tuning with the mouse controlled numerical display until the
-psk signal is aboce the '0' in the auxiliary spectrum display.
+psk signal is above the '0' in the auxiliary spectrum display, or
+\item touch the "tune" button, to instruct the software to tune to the
+strongest signal in the selected region.
 \end{itemize}
 
 \section{The plugin}
@@ -116,11 +137,19 @@ is no decoding.
 \end{itemize}
 
 The number label to the left, below the filter depth indicator,
-here with a value of 55...,
+here with a value of 12...,
 shows the "quality" of the decoding of the signal. As usual
 with this kind of indicators, 100 is best, but to get it requires
 a decent signal.
 
+New in version 2 is the spinbox, here set to "400", that specifies the
+width of the search region for fine tuning. Below this there is a button,
+when touched the software is instructed to search in the specified region -
+with the currently selected frequency in the middle - for the strongest signal
+and change tuning to that signal. If no signal with a strength of over 6dB
+over the average signal strength in the selected region within a specified
+time (5 seconds), searching stops.
+\par
 The bottom line of the widget is reserved for the decoded signal. Note that
 bpsk does not provide an error correction mechanism, and garbage may be shown.
 \end{document}

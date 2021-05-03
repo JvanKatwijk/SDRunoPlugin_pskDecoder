@@ -47,7 +47,8 @@ void	set_pskReverse    (const std::string &);
 void	set_pskMode       (const std::string &);
 void	set_pskFilter	  (int);
 void	set_pskSquelch	  (int);
-
+void	set_searchWidth	  (int);
+void	trigger_tune	  ();
 //
 void	Run			();
 
@@ -90,6 +91,8 @@ private:
 	nana::label qualityLabel {*this, nana::rectangle (50, 150, 100, 20) };
 	nana::label IFLabel {*this, nana::rectangle (200, 150, 100, 20) };
 
+	nana::spinbox pskSearch {*this, nana::rectangle (350, 150, 100, 20) };
+	nana::button tuneIn     {*this, nana::rectangle (350, 180, 40, 20) };
 	SDRunoPlugin_pskUi & m_parent;
 	IUnoPluginController & m_controller;
 };

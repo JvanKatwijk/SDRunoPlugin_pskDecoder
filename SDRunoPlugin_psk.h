@@ -15,12 +15,15 @@
 //
 //	for the payload we have
 class	upFilter;
+
+
 #include	"ringbuffer.h"
 #include	<stdint.h>
 #include        "utilities.h"
 #include	"psk-bandfilter.h"
 #include	"decimator-25.h"
 #include	"psk-shifter.h"
+#include	"sliding-fft.h"
 
 #define	PSKRATE	2000
 
@@ -50,7 +53,7 @@ public:
 //      going down
         void	show_pskText		(const std::string &);
         void	show_qualityLabel	(float);;
-	    void	show_pskIF			(float);
+	void	show_pskIF		(float);
 
 //      going upwards
         void    set_pskAfc              (const std::string &);
@@ -59,6 +62,8 @@ public:
 
         void    set_pskFilter           (int);
         void    set_pskSquelch          (int);
+	void	set_searchWidth		(int);
+	void	trigger_tune		();
 
 private:
 	enum PskMode {
@@ -78,7 +83,8 @@ private:
 	std::atomic<bool>	running;
 	int			centerFrequency;
 	int			selectedFrequency;
-
+	slidingFFT	newFFT;
+	int			searchWidth;
 	int	                fillP;
 	RingBuffer<std::complex<float> > pskSourceBuffer;
 	RingBuffer<float> pskAudioBuffer;	
@@ -110,11 +116,13 @@ private:
 	int16_t			pskVaridecode	(uint16_t);
 	double			psk_IFadjust	(double, uint16_t);
 	uint8_t			getIntPhase	(std::complex<float>);
-	int16_t			DecimatingCountforpskMode	();
+	int16_t		DecimatingCountforpskMode	();
 
-	void	        psk_clrText();
-	void	        psk_addText(char);
+	void			psk_clrText();
+	void		        psk_addText(char);
+	int		offset(std::complex<float>*);
 
+	void		updateFrequency		(int);
 	std::vector<std::complex<float>> pskToneBuffer;
 	int             pskTonePhase;
 	pskBandfilter		*BPM_Filter;
@@ -134,6 +142,7 @@ private:
 	std::complex<float>	pskOldz;
 	double			psk_phasedifference;
 
+	bool			tuning;
 	int16_t			pskPrev1Phase;
 	int16_t			pskPrev2Phase;
 	int16_t			pskCurrPhase;
