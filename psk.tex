@@ -75,13 +75,13 @@ will set this rate.
 \section{Tuning}
 As said, psk is a signal with a small footprint, and since many of
 the amateur transmissions are brief messages (such as CQ CQ ...),
-just a couple of seconds, tuning requires some training.
+lasting just a couple of seconds, tuning requires some training.
 \par
 A frequency offset of even a few Hz can make decoding the signal in a
 correct way virtually impossible.
 Therefore, in version 2 of the decoder, an
 {\em automatic frequency shift} option is included.
-The {\em tune} button, when touched, instructs the software to
+The {\em tune} button, when touched, instructs the software to detect
 the strongest signal in the
 neighbourhood of the tuned frequency - a signal at least 6 dB stronger
 than the average signal strength of the region.
@@ -92,13 +92,13 @@ after at most 5 seconds.
 \par
 The {\em search width} is selected in a spinbox. Since psk signals
 are often very close to each other, the width can be selected to up to
-300 Hz (of course both up and down).
-If no 
+300 Hz (of course both up and down). The default value on the selector is
+400, indicating a searchwidth of 200 Hz on each side of the current frequency.
+
 \par
-What is further really helpful  in tuning is using
- the {\em auxiliary spectrum display} on 
-SDRuno, the widget can be enlarged, and one may zoom in such
-that one may look at a spectrum with a width of app 1 KHz.
+What further helpful  in tuning is using the zoom on the main or the
+ {\em auxiliary spectrum display} on 
+SDRuno.
 
 \includegraphics[width=100mm]{auxiliary-spectrum-display.png}
 
@@ -107,7 +107,8 @@ My way to tune is in two steps
 \item coarse tuning with the mouse on the main spectrum display;
 \item fine tuning with the mouse controlled numerical display until the
 psk signal is above the '0' in the auxiliary spectrum display, or
-\item touch the "tune" button, to instruct the software to tune to the
+\item if we are close enought to the desired signal, 
+touch the "tune" button, to instruct the software to tune to the
 strongest signal in the selected region.
 \end{itemize}
 
