@@ -65,6 +65,8 @@ public:
 	void	set_searchWidth		(int);
 	void	trigger_tune		();
 
+	int		get_pskMode		(const std::string &);
+
 private:
 	enum PskMode {
 	   MODE_PSK31 =		0100,

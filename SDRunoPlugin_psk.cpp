@@ -54,7 +54,6 @@ SDRunoPlugin_psk::
 
 	pskFilterDegree	= 12;		/* default	*/
 	pskAfcon	= false;
-	pskMode		= MODE_PSK31;
 	pskSquelchLevel	= 5;
 	pskReverse	= false;
 	searchWidth	= SEARCH_WIDTH;
@@ -64,9 +63,11 @@ SDRunoPlugin_psk::
 
 	pskBitclk	= 0;
 	pskDecimatorCount	= 0;
+	pskMode		= get_pskMode (m_form. get_pskMode ());
+	int pskSpeed	= speedofPskMode ();
 	BPM_Filter	= new pskBandfilter (2 * pskFilterDegree + 1,
-	                                     psk_IF - PSK31_SPEED,
-	                                     psk_IF + PSK31_SPEED,
+	                                     psk_IF - pskSpeed,
+	                                     psk_IF + pskSpeed,
 	                                     PSKRATE);
 
 // we want to "work" with a rate of 2000, since we arrive
@@ -538,23 +539,28 @@ void	SDRunoPlugin_psk::set_pskSquelch	(int n) {
 	pskSquelchLevel = n;
 }
 
-void	SDRunoPlugin_psk::set_pskMode		(const std::string &s) {
+
+int	SDRunoPlugin_psk::get_pskMode		(const std::string &s) {
 	if (s == "psk31")
-	   pskMode	= MODE_PSK31;
+	   return  MODE_PSK31;
 	else
 	if (s == "qpsk31")
-	   pskMode	= MODE_QPSK31;
+	   return  MODE_QPSK31;
 	else
 	if (s == "psk63")
-	   pskMode	= MODE_PSK63;
+	   return  MODE_PSK63;
 	else
 	if (s == "qpsk63")
-	   pskMode	= MODE_QPSK63;
+	   return MODE_QPSK63;
 	else
 	if (s == "psk125")
-	   pskMode	= MODE_PSK125;
+	   return  MODE_PSK125;
 	else
-	   pskMode	= MODE_QPSK125;
+	   return  MODE_QPSK125;
+}
+
+void	SDRunoPlugin_psk::set_pskMode		(const std::string &s) {
+	pskMode	= get_pskMode (s);
 	psk_setup ();
 }
 

@@ -306,13 +306,31 @@ void	SDRunoPlugin_pskForm::Setup () {
 	pskReverse. events(). selected ([&](const nana::arg_combox &ar_cbx){
                       set_pskReverse (ar_cbx. widget. caption ());});
 	pskReverse. tooltip ("inverted or normal signal");
+
+	std::string modeInd = m_parent. load_pskMode ();
 	pskMode. push_back ("psk31");
 	pskMode. push_back ("psk63");
 	pskMode. push_back ("psk125");
 	pskMode. push_back ("qpsk31");
 	pskMode. push_back ("qpsk63");
 	pskMode. push_back ("qpsk125");
-	pskMode. option (0);
+	if (modeInd == "qpsk125")
+	   pskMode. option (5);
+	else
+	if (modeInd == "psk63")
+	   pskMode. option (1);
+	else
+	if (modeInd == "psk125")
+	   pskMode. option (2);
+	else
+	if (modeInd == "qpsk31")
+	   pskMode. option (3);
+	else
+	if (modeInd == "qpsk63")
+	   pskMode. option (4);
+	else
+	   pskMode. option (0);
+
 	pskMode. events(). selected ([&](const nana::arg_combox &ar_cbx){
                       set_pskMode (ar_cbx. widget. caption ());});
 	pskMode. tooltip ("psk mode. Note Qpsk modes not implementged");
@@ -404,5 +422,9 @@ void	SDRunoPlugin_pskForm::set_searchWidth		(int d) {
 
 void	SDRunoPlugin_pskForm::trigger_tune	() {
 	m_parent. trigger_tune ();
+}
+
+std::string	SDRunoPlugin_pskForm::get_pskMode	() {
+	return pskMode. text (pskMode. option ());
 }
 

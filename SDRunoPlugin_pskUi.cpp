@@ -61,6 +61,19 @@ int	SDRunoPlugin_pskUi::LoadY () {
 	return stoi(tmp);
 }
 
+//
+std::string     SDRunoPlugin_pskUi::load_pskMode () {
+        std::string tmp = "";
+        m_controller. GetConfigurationKey ("psk.pskMode", tmp);
+        return tmp;
+}
+
+std::string     SDRunoPlugin_pskUi::get_pskMode () {
+        std::lock_guard<std::mutex> l(m_lock);
+        if (m_form != nullptr)
+                return m_form -> get_pskMode ();
+}
+
 // Handle events from SDRuno
 // TODO: code what to do when receiving relevant events
 void SDRunoPlugin_pskUi::HandleEvent (const UnoEvent& ev) {
@@ -119,6 +132,7 @@ void	SDRunoPlugin_pskUi::set_pskReverse	(const std::string &s) {
 
 void	SDRunoPlugin_pskUi::set_pskMode		(const std::string &s) {
 	m_parent. set_pskMode (s);
+	m_controller. SetConfigurationKey ("psk.pskMode", s);
 }
 
 void	SDRunoPlugin_pskUi::set_pskFilter	(int d) {

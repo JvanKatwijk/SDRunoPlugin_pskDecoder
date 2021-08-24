@@ -34,6 +34,8 @@ public:
 	void	show_pskText		(const std::string &);
 	void	show_qualityLabel	(float);
 	void	show_pskIF		(float);
+	std::string	load_pskMode	();
+	std::string	get_pskMode	();
 
 //      going upwards
 	void	set_pskAfc		(const std::string &);
@@ -44,7 +46,6 @@ public:
 	void	set_pskSquelch		(int);
 	void	set_searchWidth		(int);
 	void	trigger_tune		();
-
 private:
 	
 	SDRunoPlugin_psk & m_parent;
