@@ -3,7 +3,31 @@
 Simple psk decoder plugin
 -----------------------------------------------------------------
 
+The psk plugin for SDRuno is - as the name suggests - a plugin
+for decoding psk signals transmitted on shortwave
+
 ![overview](/psk-example.png?raw=true)
+
+-----------------------------------------------------------------------------
+  READ THIS FIRST installing the plugin
+-----------------------------------------------------------------------------
+
+Since the psk signals are a small band signals (psk31 about 30 KHz in
+this plugin), the samplerate used as input for the plugin
+is *62500* samples/second.
+
+**On the main widget select samplerate 2000000, and decimation factor 32**.
+
+![overview](/drm-main-widget.png?raw=true)
+
+The plugin itself can be stored in the folder for community plugins
+
+The plugin is - as other plugins - developed under MSVC. Its functioning
+depends on lots of other "dll's" (Dynamic Load Libraries);
+
+If a 0x000012f error is encountered on trying to load the plugin,
+it means that dll's from the Visual C++ Redistributable(VS 2015) are
+not found.
 
 --------------------------------------------------------------------
 psk decoding
@@ -13,24 +37,23 @@ psk31 is a signal with a small bandwidth, psk31 has a bandwidth of
 31 Hz. Tuning psk is difficult, a few Hz off and decoding is not well
 possible.
 
-The psk decoder assumes that the input rate is reduced to 2000000 / 32, i.e.
-about 62.5 KHz. The large spectrum display shows a psk signal, after all 
-it shows the energy of the signal, correct tuning on this display is
-rather difficult.
-
-Happily there is a smaller display, showing only a fraction of the complete
+Tuning is difficult. The main spectrum display shows a signal with a
+width of 62500 Hz. Happily, the display has a zoom possibility.
+There is a smaller display, showing only a fraction of the complete
 band, and this display has an excellent zoom function (see the picture).
 For tuning the VFO has to be exactly on the center of the psk signal,
 using the zoom function, and using the numerical display, makes it possible
 to tune to the signal.
 However, since most transmissions in amateur bands are brief, correct
 tuning to a signal requires some training.
+In case you are almost om the right frequency, there is a button, labeled "tune", that will look into a small segment
+of the spectrum and adjust the frequency.
 
 The widget has three comboboxes,  one for the afc, one for reversing
 the decoding of the modulation and one for selecting the psk Mode.
 
 Below these comboboxes, two spinboxes are visible, the left
-on for setting the degree of the (final) lowpass filter to eliminate
+one for setting the degree of the (final) lowpass filter to eliminate
 noise in the neighbourhood of the signal, the second one
 for setting the noise floor.
 
@@ -43,7 +66,5 @@ computed correction for the frequency is 4.5 Hz.
 
 The implementation of the decoder is taken from the psk decoder of the
 swradio-8
-
-
 
 
