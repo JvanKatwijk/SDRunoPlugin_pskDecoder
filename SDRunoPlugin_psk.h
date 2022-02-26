@@ -76,38 +76,27 @@ private:
 	   MODE_QPSK63 =	0111,
 	   MODE_QPSK125 =	0112
 	};
-	std::mutex             m_lock;
+	RingBuffer<std::complex<float> > pskSourceBuffer;
+	RingBuffer<float>	pskAudioBuffer;	
+	pskBandFilter		passbandFilter;
+	decimator_25            theDecimator;
+	slidingFFT		newFFT;
+	std::mutex		m_lock;
 	SDRunoPlugin_pskUi	m_form;
 	std::mutex		locker;
 	IUnoPluginController	*m_controller;
 	void			WorkerFunction		();
 	std::thread* 		m_worker;
 	std::atomic<bool>	running;
-	int			centerFrequency;
-	int			selectedFrequency;
-	slidingFFT	newFFT;
-	int			searchWidth;
+	int			searchRange;
 	int	                fillP;
-	RingBuffer<std::complex<float> > pskSourceBuffer;
-	RingBuffer<float> pskAudioBuffer;	
-	pskBandfilter           passbandFilter;
-	pskShifter		theMixer;
-	decimator_25            theDecimator;
 	std::vector<std::complex<float>> pskTone;
-	pskShifter		localShifter;
 
-	std::vector<std::complex<float>> convBuffer;
-	int                     convIndex;
-	int16_t                 mapTable_int   [PSKRATE / 100];
-	float                   mapTable_float [PSKRATE / 100];
-
-	void			process		(std::complex<float>);
-	int16_t			resample	(std::complex<float>,
-	                                         std::complex<float> *);
-	void			processSample(std::complex<float>);
+	float			avgSignal;
+	void			processSample	(std::complex<float>);
 	void			doDecode	(std::complex<float>);
 	void			psk_setup	();
-	float			speedofPskMode	();
+	float			speedofPskMode	(int);
 	bool			isBinarypskMode	();
 	bool			isQuadpskMode	();	
 	uint8_t			decodingIsOn	(uint8_t,
@@ -118,16 +107,17 @@ private:
 	int16_t			pskVaridecode	(uint16_t);
 	double			psk_IFadjust	(double, uint16_t);
 	uint8_t			getIntPhase	(std::complex<float>);
-	int16_t		DecimatingCountforpskMode	();
+	int16_t			DecimatingCountforpskMode	(int);
 
-	void			psk_clrText();
-	void		        psk_addText(char);
-	int		offset(std::complex<float>*);
+	void			psk_clrText	();
+	void		        psk_addText	(char);
+	int			offset		(std::complex<float>*);
 
-	void		updateFrequency		(int);
+	void			updateFrequency		(int);
 	std::vector<std::complex<float>> pskToneBuffer;
-	int             pskTonePhase;
-	pskBandfilter		*BPM_Filter;
+	int			pskTonePhase;
+	pskBandFilter		*psk_baseFilter;
+	pskBandFilter		*BPM_Filter;
 //	viterbi			*viterbiDecoder;
 	double			psk_IF;
 	int16_t			pskDecimatorCount;

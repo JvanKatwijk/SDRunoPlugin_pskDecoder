@@ -12,7 +12,7 @@
 #include        "utilities.h"
 #include        "up-filter.h"
 
-#define	IN_RATE			62500
+#define	IN_RATE			192000
 #define pskK                    5
 #define pskPOLY1                0x17
 #define pskPOLY2                0x19
@@ -23,12 +23,11 @@
 #define PSK_IF			0
 
 #define	NO_OFFSET_FOUND		-500
-#define	SEARCH_WIDTH 400
+#define	SEARCH_WIDTH 800
 //
 #define  _USE_MATH_DEFINES
 #include	<math.h>
 //
-//	This will only work with the rate set to 2000000 / 32
 SDRunoPlugin_psk::
 	     SDRunoPlugin_psk (IUnoPluginController& controller) :
 	                                         IUnoPlugin  (controller),
@@ -36,13 +35,11 @@ SDRunoPlugin_psk::
 	                                         m_worker (nullptr),
 	                                         pskSourceBuffer (16 * 32768),
 	                                         pskAudioBuffer (16 * 32768),
-	                                         passbandFilter (15,
-	                                                         -2000,
-	                                                         +2000,
+	                                         passbandFilter (35,
+	                                                         -PSKRATE / 2,
+	                                                         PSKRATE / 2,
 	                                                         IN_RATE),
-	                                         theMixer (IN_RATE),
-	                                         theDecimator (IN_RATE/2500),
-	                                         localShifter (PSKRATE),
+	                                         theDecimator (IN_RATE / 2000),
 	                                         pskToneBuffer (128),
 	                                         newFFT (PSKRATE, 0, PSKRATE - 1){
 	
@@ -56,55 +53,43 @@ SDRunoPlugin_psk::
 	pskAfcon	= false;
 	pskSquelchLevel	= 5;
 	pskReverse	= false;
-	searchWidth	= SEARCH_WIDTH;
+	searchRange	= SEARCH_WIDTH;
 
+	avgSignal	= 0;
 	for (int i = 0; i < 16; i ++)
 	   pskBuffer [i] = std::complex<float> (0, 0);
 
 	pskBitclk	= 0;
-	pskDecimatorCount	= 0;
-	pskMode		= get_pskMode (m_form. get_pskMode ());
-	int pskSpeed	= speedofPskMode ();
-	BPM_Filter	= new pskBandfilter (2 * pskFilterDegree + 1,
+//	pskMode		= get_pskMode (m_form. get_pskMode ());
+	pskMode		= MODE_PSK31;
+	int pskSpeed	= speedofPskMode (pskMode);
+	psk_baseFilter	= new pskBandFilter (2 * pskFilterDegree + 1,
+	                                     psk_IF - 500,
+	                                     psk_IF + 500,
+	                                     PSKRATE);
+	BPM_Filter	= new pskBandFilter (2 * pskFilterDegree + 1,
 	                                     psk_IF - pskSpeed,
 	                                     psk_IF + pskSpeed,
 	                                     PSKRATE);
 
-// we want to "work" with a rate of 2000, since we arrive
-// from IN_RATE we first decimate and filter to 2500 and then
-// interpolate for the rest
-        for (int i = 0; i < PSKRATE / 100; i++) {
-           float inVal = float (2500);
-           mapTable_int[i] = int (floor (i * (inVal / PSKRATE)));
-           mapTable_float[i] = i * (inVal / PSKRATE) - mapTable_int[i];
-        }
-        convIndex = 0;
-        convBuffer.resize (2500 / 100 + 1);
-
-	m_controller	-> RegisterStreamProcessor (0, this);
+//	m_controller	-> RegisterStreamProcessor (0, this);
 	m_controller	-> RegisterAudioProcessor (0, this);
+	m_controller    -> SetDemodulatorType (0,
+	                          IUnoPluginController::DemodulatorIQOUT);
 
 	pskAudioRate	= m_controller -> GetAudioSampleRate (0);
-	pskSourceRate	= m_controller -> GetSampleRate (0);
-	pskError	= false;
-	if ((pskSourceRate != 2000000 / 32) || (pskAudioRate != 48000)) {
-	   m_form. show_pskText ("please set input rate to 2000000 /32 and audio to 48000");
-	   pskError	= true;
-	}
 
 	pskToneBuffer. resize (pskAudioRate);
-        for (int i = 0; i < pskAudioRate; i++) {
-           float term = (float)i / pskAudioRate * 2 * M_PI;
-           pskToneBuffer [i] = std::complex<float> (cos (term),
-                                                   sin (term));
-        }
-        pskTonePhase     = 0;
-        audioFilter     = new upFilter (25, PSKRATE, pskAudioRate);
+	for (int i = 0; i < pskAudioRate; i++) {
+	   float term = (float)i / pskAudioRate * 2 * M_PI;
+	   pskToneBuffer [i] = std::complex<float> (cos (term),
+	                                            sin (term));
+	}
 
-	tuning		= false;
-	selectedFrequency
-                        = m_controller -> GetVfoFrequency (0);
-        centerFrequency = m_controller -> GetCenterFrequency (0);
+	pskDecimatorCount	= 0;
+	pskTonePhase     = 0;
+	audioFilter     = new upFilter (25, PSKRATE, pskAudioRate);
+
 	m_worker        = new std::thread (&SDRunoPlugin_psk::WorkerFunction,
 	                                                               this);
 }
@@ -117,6 +102,7 @@ SDRunoPlugin_psk::
 	delete m_worker;
 	m_worker = nullptr;
 
+	delete psk_baseFilter;
 	delete BPM_Filter;
 	delete audioFilter;
 }
@@ -125,8 +111,7 @@ void	SDRunoPlugin_psk::StreamProcessorProcess (channel_t	channel,
 	                                           Complex	*buffer,
 	                                           int		length,
 	                                           bool		&modified) {
-	if (running. load () & !pskError) 
-	   pskSourceBuffer. putDataIntoBuffer (buffer, length);
+	(void)channel; (void)buffer; (void)length; 
 	modified = false;
 }
 
@@ -134,24 +119,26 @@ void	SDRunoPlugin_psk::AudioProcessorProcess (channel_t channel,
 	                                          float* buffer,
 	                                          int length,
 	                                          bool& modified) {
+//	Handling IQ input, note that SDRuno interchanges I and Q elements
+	if (!modified) {
+	   for (int i = 0; i < length; i++) {
+	      std::complex<float> sample =
+                           std::complex<float>(buffer [2 * i +  1],
+                                               buffer [2 * i]);
+              sample = passbandFilter.Pass (sample);
+	      pskSourceBuffer.putDataIntoBuffer (&sample, 1);
+           }
+        }
+
 	if (pskAudioBuffer. GetRingBufferReadAvailable () >= length * 2) {
 	   pskAudioBuffer. getDataFromBuffer (buffer, length * 2);
-	   modified = true;
 	}
-	else
-	   modified = false;
+	modified = true;
 }
 
 void	SDRunoPlugin_psk::HandleEvent (const UnoEvent& ev) {
 	switch (ev. GetType ()) {
 	   case UnoEvent::FrequencyChanged:
-	      selectedFrequency =
-	              m_controller ->GetVfoFrequency (ev. GetChannel ());
-	      centerFrequency = m_controller -> GetCenterFrequency(0);
-	      locker. lock ();
-	      passbandFilter.
-	             update (selectedFrequency - centerFrequency, 3000);
-	      locker. unlock ();
 	      break;
 
 	   case UnoEvent::CenterFrequencyChanged:
@@ -165,7 +152,7 @@ void	SDRunoPlugin_psk::HandleEvent (const UnoEvent& ev) {
 
 #define	BUFFER_SIZE	4096
 void	SDRunoPlugin_psk::WorkerFunction () {
-Complex buffer [BUFFER_SIZE];
+std::complex<float> buffer [BUFFER_SIZE];
 int	cycleCount	= 0;
 
 	running. store (true);
@@ -177,80 +164,40 @@ int	cycleCount	= 0;
 	      break;
 	   pskSourceBuffer. getDataFromBuffer (buffer, BUFFER_SIZE);
 	   for (int i = 0; i < BUFFER_SIZE; i++) {
-	      int theOffset = centerFrequency - selectedFrequency;
-	      std::complex<float> sample =
-	                std::complex<float>(buffer [i]. real, buffer [i]. imag);
-	      locker.lock();
-	      sample	= passbandFilter. Pass (sample);
-	      locker.unlock();
-	      sample	= theMixer. do_shift (sample, -theOffset);
-	      if (theDecimator. Pass (sample, &sample))
-	         process (sample);
+	      std::complex<float> sample = buffer [i];
+	      sample	= psk_baseFilter -> Pass (sample);
+		  if (theDecimator.Pass(sample, &sample))
+	         processSample (sample);
 	   }
 	   cycleCount += BUFFER_SIZE;
 	   if (cycleCount > IN_RATE) {
 	      cycleCount		= 0;
 	      show_qualityLabel (pskAfcmetrics);
-	      show_pskIF	(psk_IF);
+//	      show_pskIF	(psk_IF);
 	   }
 	}
 	m_form.show_pskText ("end of worker function");
 	Sleep(1000);
 }
 
-//	simple "resampler", a simple table for mapping N input samples
-//	into M outputsamples
 static inline
 std::complex<float> cmul(std::complex<float> x, float y) {
 	return std::complex<float> (real(x) * y, imag(x) * y);
 }
 
-int16_t	SDRunoPlugin_psk::resample	(std::complex<float> in,
-	                                 std::complex<float> *out) {
-	convBuffer [convIndex ++] = in;
-	if (convIndex >= convBuffer. size ()) {
-	   for (int i = 0; i < PSKRATE / 100; i ++) {
-	      int16_t  inpBase       = mapTable_int [i];
-	      float    inpRatio      = mapTable_float [i];
-	      out [i]       = cmul (convBuffer [inpBase + 1], inpRatio) +
-	                          cmul (convBuffer [inpBase], 1 - inpRatio);
-	   }
-	   convBuffer [0]	= convBuffer [convBuffer. size () - 1];
-	   convIndex	= 1;
-	   return PSKRATE / 100;
-	}
-	return -1;
-}
-
-void	SDRunoPlugin_psk::process (std::complex<float> z) {
-	std::complex<float> out[128];
-	int	cnt;
-
-	cnt = resample (z, out);
-	if (cnt < 0)
-	   return;
-
-	for (int i = 0; i < cnt; i++) {
-	   processSample (out[i]);
-	}
-}
-
-
 static int fftTeller = 0;
-static float secondsRun	= 0;
 //
 //	here we are on PSK_RATE samples per second
 void	SDRunoPlugin_psk::processSample (std::complex<float> z) {
-std::complex<float>	old_z;
-std::complex<float> v [PSKRATE / 8];
 std::vector<std::complex<float>> tone (pskAudioRate / PSKRATE);
 std::complex<float> outV [PSKRATE];
-//	we down-mix the signal to a zero-centered one,
-	old_z	= z;
-	z = localShifter.do_shift(z, psk_IF);
-	locker. lock ();
-	z	= BPM_Filter -> Pass (z);
-	locker. unlock ();
+static int initCount = 0;
+	if (initCount <= PSKRATE) {
+	   initCount ++;
+	   avgSignal += abs (z);
+	   if (initCount == PSKRATE)
+	      avgSignal /= PSKRATE;
+	}
 
 	audioFilter -> Filter (cmul (z, 20), tone. data ());
 	for (int i = 0; i < tone. size (); i ++) {
@@ -258,25 +205,30 @@ std::complex<float> outV [PSKRATE];
 	   pskTonePhase = (pskTonePhase + 801) % pskAudioRate;
 	}
 	pskAudioBuffer.putDataIntoBuffer (tone. data (), tone. size () * 2);
-
-	if (tuning) {
+//
+	if (abs (z) > 3 * avgSignal)  {
 	   newFFT. do_FFT (z, outV);
 	   fftTeller++;
 	   if (fftTeller >= PSKRATE / 2) {
 	      int offs = offset (outV);
 	      if ((offs != NO_OFFSET_FOUND) && (abs (offs) >= 3)) {
-	         updateFrequency (offs / 2);
+	         if ((- searchRange / 2 < psk_IF + offs) &&
+	             (psk_IF + offs / 2 < searchRange)) {
+	            psk_IF += offs / 2;
+	            BPM_Filter -> update (psk_IF - 30, psk_IF + 30);
+	            updateFrequency (offs / 2);
+	            m_form.  show_pskIF (psk_IF);
+	         }
 	      }
-	      secondsRun += 0.5;
-	      if ((offs == 0) || (secondsRun > 5))
-	         tuning = false;
 	      fftTeller = 0;
 	      newFFT.reset();
 	   }
 	}
+	avgSignal = 0.99 * avgSignal + 0.01 * abs (z);
+	z = BPM_Filter	-> Pass (z);
 //
-//	Now we are on PSKRATE 
-	if (++pskDecimatorCount < this -> DecimatingCountforpskMode ()) 
+//	Now we are on PSKRATE and decimate to 16 samples per symbol
+	if (++pskDecimatorCount < this -> DecimatingCountforpskMode (pskMode)) 
 	   return;
 	pskDecimatorCount	= 0;
 	doDecode (z);
@@ -375,7 +327,7 @@ double	error;
 	   error -= 2 * M_PI;
 
 	error /= 2 * M_PI;
-	error *= (double)(PSKRATE / DecimatingCountforpskMode ()) / 8;
+	error *= (double)(PSKRATE / DecimatingCountforpskMode (pskMode)) / 8;
 	return  - error / 256;
 }
 
@@ -493,8 +445,8 @@ bool	SDRunoPlugin_psk::isQuadpskMode () {
 	return false;
 }
 
-float	SDRunoPlugin_psk::speedofPskMode () {
-	switch (pskMode) {
+float	SDRunoPlugin_psk::speedofPskMode (int mode) {
+	switch (mode) {
 	   default:
 	   case MODE_PSK31:
 	   case MODE_QPSK31:
@@ -510,19 +462,19 @@ float	SDRunoPlugin_psk::speedofPskMode () {
 	}
 }
 
-int16_t SDRunoPlugin_psk::DecimatingCountforpskMode (void) {
-        switch (pskMode) {
-           default:
-           case MODE_PSK31:
-           case MODE_QPSK31:
-              return 4;
-           case MODE_PSK63:
-           case MODE_QPSK63:
-              return 2;
-           case MODE_PSK125:
-           case MODE_QPSK125:
-              return 1;
-        }
+int16_t SDRunoPlugin_psk::DecimatingCountforpskMode (int mode) {
+	switch (mode) {
+	   default:
+	   case MODE_PSK31:
+	   case MODE_QPSK31:
+	      return 4;
+	   case MODE_PSK63:
+	   case MODE_QPSK63:
+	      return 2;
+	   case MODE_PSK125:
+	   case MODE_QPSK125:
+	      return 1;
+	}
 }
 
 void	SDRunoPlugin_psk::set_pskAfc		(const std::string &s) {
@@ -581,7 +533,7 @@ void	SDRunoPlugin_psk::psk_setup	() {
 //	pskFilterDegree
 
 
-        pskPhaseAcc		= 0;
+	pskPhaseAcc		= 0;
 	pskOldz			= 0;
 	psk_phasedifference	= 0.0;
 	pskShiftReg		= 0;
@@ -594,44 +546,44 @@ void	SDRunoPlugin_psk::psk_setup	() {
 	pskDecimatorCount	= 0;
 
 	delete	BPM_Filter;
-	BPM_Filter		= new pskBandfilter (2 * pskFilterDegree + 1,
-	                                           PSK_IF - speedofPskMode (),
-	                                           PSK_IF + speedofPskMode (),
-	                                           PSKRATE);
+	BPM_Filter	= new pskBandFilter (2 * pskFilterDegree + 1,
+	                                     PSK_IF - speedofPskMode (pskMode),
+	                                     PSK_IF + speedofPskMode (pskMode),
+	                                     PSKRATE);
 }
 
 static  std::string pskTextLine;
 void    SDRunoPlugin_psk::psk_clrText		()	{
-        m_form.  show_pskText ("");
-        pskTextLine        = "";
+	m_form.  show_pskText ("");
+	pskTextLine        = "";
 }
 
 void	SDRunoPlugin_psk::psk_addText		(char c)  {
-        if (c < ' ')
-           c = ' ';
-        pskTextLine. append (1, c);
-        if (pskTextLine. length () > 65)
-           pskTextLine. erase (0, 1);
-        m_form. show_pskText (pskTextLine);
+	if (c < ' ')
+	   c = ' ';
+	pskTextLine. append (1, c);
+	if (pskTextLine. length () > 65)
+	   pskTextLine. erase (0, 1);
+	m_form. show_pskText (pskTextLine);
 }
 
 void	SDRunoPlugin_psk::set_searchWidth	(int w) {
-	searchWidth	= w;
+	searchRange	= w;
 }
 
-#define	MAX_SIZE 40
+#define	MAX_SIZE 20
 int	SDRunoPlugin_psk::offset (std::complex<float> *v) {
 float avg	= 0;
 float max	= 0;
 float	supermax	= 0;
 int	superIndex	= 0;
 
-	if (searchWidth < 25)
+	if (searchRange < 25)
 	   return 0;
-	for (int i = 0 ; i < searchWidth; i ++)
-	   avg += abs (v [ (PSKRATE - searchWidth / 2 + i) % PSKRATE]);
-	avg /= searchWidth;
-	int	index	= PSKRATE - searchWidth / 2;
+	for (int i = 0 ; i < searchRange; i ++)
+	   avg += abs (v [ (PSKRATE - searchRange / 2 + i) % PSKRATE]);
+	avg /= searchRange;
+	int	index	= PSKRATE - searchRange / 2;
 	for (int i = 0; i < MAX_SIZE; i ++)
 	   max +=  abs (v [index + i]);
 
@@ -640,15 +592,13 @@ int	superIndex	= 0;
 	   max -=  abs (v [(index + i - MAX_SIZE) % PSKRATE]);
 	   max +=  abs (v [(index + i) % PSKRATE]);
 	   if (max > supermax) {
-	      superIndex = (index + i - MAX_SIZE / 2) % PSKRATE;
+	      superIndex = (index + i - MAX_SIZE / 2);
 	      supermax = max;
 	   }
 	}
 
 	if (supermax / MAX_SIZE > 3 * avg)
-	   return superIndex > PSKRATE / 2 ?
-	                            superIndex - PSKRATE :
-	                                     superIndex;
+	   return superIndex - PSKRATE;
 	else
 	   return NO_OFFSET_FOUND;
 }
@@ -657,14 +607,14 @@ void	SDRunoPlugin_psk::updateFrequency (int offs) {
 	if (abs (offs) <= 2)
 	   return;
 	int	currentFreq	=
-                        m_controller -> GetVfoFrequency (0);
+	                m_controller -> GetVfoFrequency (0);
 	m_controller -> SetVfoFrequency (0, currentFreq + offs);
 }
 
 void	SDRunoPlugin_psk::trigger_tune	() {
 	newFFT. reset ();
-	tuning		= !tuning;
 	fftTeller	= 0;
-	secondsRun	= 0;
+	psk_IF		= PSK_IF;
+	show_pskIF	(psk_IF);
 }
 

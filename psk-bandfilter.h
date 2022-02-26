@@ -27,10 +27,10 @@
 #include	<complex>
 #include	<vector>
 
-class	pskBandfilter {
+class	pskBandFilter {
 public:
-			pskBandfilter	(int16_t, int32_t, int32_t, int32_t);
-			~pskBandfilter	();
+			pskBandFilter	(int16_t, int32_t, int32_t, int32_t);
+			~pskBandFilter	();
 	std::complex<float> Pass (std::complex<float>);
 	void		update	(int, int);
 private:

@@ -282,6 +282,10 @@ void	SDRunoPlugin_pskForm::Setup () {
 	pskText. fgcolor (nana::colors::white);
 	pskText. caption ("");
 
+	copyRightLabel. transparent (true);
+	copyRightLabel. fgcolor (nana::colors::white);
+	copyRightLabel. caption ("\xa9");
+	copyRightLabel. tooltip ("Created by Jan van Katwijk, allrights reserved");
 	qualityLabel. transparent (true);
 	qualityLabel. fgcolor(nana::colors::white);
 	qualityLabel. caption("");

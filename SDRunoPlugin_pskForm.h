@@ -82,7 +82,9 @@ private:
 
 // TODO: Now add your UI controls here
 //
-	nana::label pskText {*this, nana::rectangle (20, 200, 450, 20) };
+	nana::label pskText {*this, nana::rectangle (20, 200, 420, 20) };
+	nana::label copyRightLabel
+	                    {*this, nana::rectangle (460, 200, 20, 20) };
 
 	nana::combox pskAfc {*this, nana::rectangle (60, 80, 100, 20) };
 	nana::combox pskReverse {*this, nana::rectangle (200, 80, 100, 20)};

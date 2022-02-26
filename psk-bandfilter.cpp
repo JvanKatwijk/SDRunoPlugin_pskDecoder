@@ -25,7 +25,7 @@
 #define  _USE_MATH_DEFINES
 #include	"psk-bandfilter.h"
 
-	pskBandfilter::pskBandfilter (int16_t filterSize,
+	pskBandFilter::pskBandFilter (int16_t filterSize,
 	                              int32_t low, int32_t high,
 	                              int32_t sampleRate):
 	                                      filterBase (filterSize),
@@ -63,11 +63,11 @@ float	sum	= 0.0;
 	}
 }
 
-	pskBandfilter::~pskBandfilter () {
+	pskBandFilter::~pskBandFilter () {
 }
 
 std::complex<float>
-	pskBandfilter::Pass (std::complex<float> z) {
+	pskBandFilter::Pass (std::complex<float> z) {
 int16_t	i;
 std::complex<float>	tmp = std::complex<float>(0, 0);
 
@@ -83,7 +83,7 @@ std::complex<float>	tmp = std::complex<float>(0, 0);
 	return tmp;
 }
 
-void	pskBandfilter::update	(int shift, int width) {
+void	pskBandFilter::update	(int shift, int width) {
 	(void)width;
 	float rshift = (float)shift / sampleRate;
 	for (int i = 0; i < filterSize; i ++) { // shifting
