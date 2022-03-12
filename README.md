@@ -12,13 +12,14 @@ for decoding psk signals transmitted on shortwave
   READ THIS FIRST installing the plugin
 -----------------------------------------------------------------------------
 
-Since the psk signals are a small band signals (psk31 about 30 KHz in
+Since the psk signals are a small band signals (psk31 about 30 Hz in
 this plugin), the samplerate used as input for the plugin
-is *62500* samples/second.
-
-**On the main widget select samplerate 2000000, and decimation factor 32**.
-
-![overview](/drm-main-widget.png?raw=true)
+is 192000 samples/second.
+The plugin uses the SP1 stream, provided by the SDRuno platform,
+a stream with a rate of 192000.
+Note that the zooming facility on the main spectrum display can be
+used to show a spectrum where signals with such a small width
+can be made visible.
 
 The plugin itself can be stored in the folder for community plugins
 
